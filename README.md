@@ -6,7 +6,7 @@ This project serves as a great pet-project to demonstrate understanding of brows
 
 ## Demo
 
-![Security Playground Demo](demo.gif)
+![Security Playground Demo](./demo.gif)
 
 ---
 
@@ -26,11 +26,11 @@ If you want to run the project locally:
 
 1.  Clone this repository:
     ```bash
-    git clone [https://github.com/kvarbulemba/your-repo-name.git](https://github.com/kvarbulemba/your-repo-name.git)
+    git clone [https://github.com/kvarbulemba/security-playground.git](https://github.com/kvarbulemba/your-repo-name.git)
     ```
 2.  Navigate to the directory:
     ```bash
-    cd your-repo-name
+    cd security-playground
     ```
 3.  Open the `index.html` file directly in your favorite web browser.
 
