@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Playground by kvarbulemba</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #eaeaea;
+            margin: 0;
+            padding: 20px;
+            
+            background-image: url('https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGtia2w4N20wNDZ4MTZudm9mcG5keWttZDBrdWUzdTdhNmsza2x2NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/aGeePr7nv6ra8/giphy.gif');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(26, 26, 26, 0.92); 
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto; 
+            position: relative; 
+            z-index: 1;
+        }
+
+        nav {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #444;
+        }
+
+        nav button {
+            padding: 10px 15px;
+            border: none;
+            background: none;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 1rem;
+            border-bottom: 3px solid transparent;
+        }
+
+        nav button.active {
+            color: #fff;
+            border-bottom-color: #007bff;
+        }
+
+        section {
+            display: none;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background-color: #252525;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        textarea, input[type="text"], input[type="password"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 5px;
+            box-sizing: border-box; 
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        button.secondary {
+            background-color: #555;
+        }
+        button.secondary:hover {
+            background-color: #777;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #009fff;
+        }
+
+        pre {
+            background-color: #111;
+            padding: 10px;
+            border-radius: 5px;
+            word-wrap: break-word;
+            white-space: pre-wrap; 
+            color: #aaffaa;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .options label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        #strength-meter {
+            width: 100%;
+            height: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        #strength-bar {
+            height: 100%;
+            width: 0;
+            background-color: #d9534f; /* Red */
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+        #strength-text {
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #aaa;
+        }
+        .links {
+            margin-bottom: 15px;
+        }
+        .links a {
+            color: #009fff;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 500;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+        .made-by {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Security Playground</h1>
+        
+        <nav>
+            <button data-tab="hash" class="active">Hashing (SHA-256)</button>
+            <button data-tab="encrypt">Encryption (AES)</button>
+            <button data-tab="generate">Password Generator</button>
+            <button data-tab="strength">Password Strength</button>
+        </nav>
+
+        <section id="hash" class="active">
+            <h2>Hashing (SHA-256)</h2>
+            <p>Hashing is a one-way function. It's impossible to get the original text from the hash.</p>
+            <textarea id="hash-input" rows="5" placeholder="Enter text to hash..."></textarea>
+            <button id="hash-btn">Calculate Hash</button>
+            <h3>Result (Hex):</h3>
+            <pre id="hash-output"></pre>
+        </section>
+
+        <section id="encrypt">
+            <h2>Symmetric Encryption (AES-GCM)</h2>
+            <p>Uses a password to create a key. The same password is required for decryption.</p>
+            <textarea id="encrypt-input" rows="5" placeholder="Enter text..."></textarea>
+            <input type="password" id="encrypt-pass" placeholder="Enter password...">
+            <button id="encrypt-btn">Encrypt</button>
+            <button id="decrypt-btn">Decrypt</button>
+            <h3>Result (Base64):</h3>
+            <pre id="encrypt-output"></pre>
+        </section>
+
+        <section id="generate">
+            <h2>Password Generator</h2>
+            <label for="pass-length">Length: <span id="length-display">16</span></label>
+            <input type="range" id="pass-length" min="8" max="64" value="16" style="width: 100%;">
+            
+            <div class="options">
+                <label><input type="checkbox" id="check-upper" checked> Uppercase (A-Z)</label>
+                <label><input type="checkbox" id="check-lower" checked> Lowercase (a-z)</label>
+                <label><input type="checkbox" id="check-numbers" checked> Numbers (0-9)</label>
+                <label><input type="checkbox" id="check-symbols" checked> Symbols (!@#)</label>
+            </div>
+            
+            <button id="generate-btn">Generate</button>
+            <button id="download-btn" class="secondary">Download (.txt)</button>
+            <h3>Your new password:</h3>
+            <input type="text" id="generate-output" readonly>
+        </section>
+
+        <section id="strength">
+            <h2>Password Strength Check</h2>
+            <input type="text" id="strength-input" placeholder="Enter password to check...">
+            <div id="strength-meter">
+                <div id="strength-bar"></div>
+            </div>
+            <div id="strength-text"></div>
+        </section>
+
+        <footer>
+            <div class="links">
+                <a href="https://kvarbulemba.github.io/cv-website" target="_blank">My CV</a>
+                <a href="https://github.com/kvarbulemba" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/illia-denysenko-aa2056375" target="_blank">LinkedIn</a>
+            </div>
+            <p class="made-by">Made by kvarbulemba</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut aliquip ex ea commodo consequat.";
+            
+            document.getElementById('hash-input').value = loremIpsum;
+            document.getElementById('encrypt-input').value = loremIpsum;
+            const navButtons = document.querySelectorAll('nav button');
+            const sections = document.querySelectorAll('section');
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    const targetId = button.getAttribute('data-tab');
+                    sections.forEach(section => {
+                        section.classList.toggle('active', section.id === targetId);
+                    });
+                });
+            });
+
+            const hashBtn = document.getElementById('hash-btn');
+            const hashInput = document.getElementById('hash-input');
+            const hashOutput = document.getElementById('hash-output');
+
+            hashBtn.addEventListener('click', async () => {
+                const text = hashInput.value;
+                if (!text) {
+                    hashOutput.textContent = 'Please enter data.';
+                    return;
+                }
+                
+                try {
+                    const encoder = new TextEncoder();
+                    const data = encoder.encode(text);
+                    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
+                    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                    hashOutput.textContent = hashHex;
+                } catch (e) {
+                    hashOutput.textContent = `Error: ${e.message}`;
+                }
+            });
+
+            const encryptBtn = document.getElementById('encrypt-btn');
+            const decryptBtn = document.getElementById('decrypt-btn');
+            const encryptInput = document.getElementById('encrypt-input');
+            const encryptPass = document.getElementById('encrypt-pass');
+            const encryptOutput = document.getElementById('encrypt-output');
+
+            const abToB64 = (buffer) => btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
+            const b64ToAb = (b64) => Uint8Array.from(atob(b64), c => c.charCodeAt(0)).buffer;
+            const enc = new TextEncoder();
+            const dec = new TextDecoder();
+
+            async function getKey(password, salt) {
+                const keyMaterial = await crypto.subtle.importKey(
+                    "raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]
+                );
+                return crypto.subtle.deriveKey(
+                    { "name": "PBKDF2", salt: salt, "iterations": 100000, "hash": "SHA-256" },
+                    keyMaterial,
+                    { "name": "AES-GCM", "length": 256 },
+                    true, ["encrypt", "decrypt"]
+                );
+            }
+
+            encryptBtn.addEventListener('click', async () => {
+                const plaintext = encryptInput.value;
+                const password = encryptPass.value;
+                if (!plaintext || !password) {
+                    encryptOutput.textContent = "Text and password are required.";
+                    return;
+                }
+
+                try {
+                    const salt = crypto.getRandomValues(new Uint8Array(16));
+                    const iv = crypto.getRandomValues(new Uint8Array(12));
+                    const key = await getKey(password, salt);
+                    
+                    const ciphertext = await crypto.subtle.encrypt(
+                        { name: "AES-GCM", iv: iv }, key, enc.encode(plaintext)
+                    );
+                    
+                    const saltB64 = abToB64(salt);
+                    const ivB64 = abToB64(iv);
+                    const ctB64 = abToB64(ciphertext);
+                    
+                    encryptOutput.textContent = `${saltB64}:${ivB64}:${ctB64}`;
+                } catch (e) {
+                    encryptOutput.textContent = `Encryption error: ${e.message}`;
+                }
+            });
+
+            decryptBtn.addEventListener('click', async () => {
+                const cipherFull = encryptInput.value;
+                const password = encryptPass.value;
+                if (!cipherFull || !password) {
+                    encryptOutput.textContent = "Encrypted text (salt:iv:ct) and password are required.";
+                    return;
+                }
+
+                try {
+                    const [saltB64, ivB64, ctB64] = cipherFull.split(':');
+                    if (!saltB64 || !ivB64 || !ctB64) {
+                        encryptOutput.textContent = "Invalid format. Expected salt:iv:ciphertext in Base64.";
+                        return;
+                    }
+
+                    const salt = b64ToAb(saltB64);
+                    const iv = b64ToAb(ivB64);
+                    const ciphertext = b64ToAb(ctB64);
+                    const key = await getKey(password, salt);
+
+                    const decrypted = await crypto.subtle.decrypt(
+                        { name: "AES-GCM", iv: iv }, key, ciphertext
+                    );
+                    
+                    encryptOutput.textContent = dec.decode(decrypted);
+                } catch (e)
+ {
+                    encryptOutput.textContent = "Decryption error. Likely incorrect password or corrupted data.";
+                }
+            });
+
+            const generateBtn = document.getElementById('generate-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            const generateOutput = document.getElementById('generate-output');
+            const passLengthSlider = document.getElementById('pass-length');
+            const lengthDisplay = document.getElementById('length-display');
+            const checkUpper = document.getElementById('check-upper');
+            const checkLower = document.getElementById('check-lower');
+            const checkNumbers = document.getElementById('check-numbers');
+            const checkSymbols = document.getElementById('check-symbols');
+
+            const charsets = {
+                upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                lower: 'abcdefghijklmnopqrstuvwxyz',
+                numbers: '0123456789',
+                symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+            };
+
+            passLengthSlider.addEventListener('input', () => {
+                lengthDisplay.textContent = passLengthSlider.value;
+            });
+
+            function generatePassword() {
+                const length = parseInt(passLengthSlider.value, 10);
+                let charset = '';
+                if (checkUpper.checked) charset += charsets.upper;
+                if (checkLower.checked) charset += charsets.lower;
+                if (checkNumbers.checked) charset += charsets.numbers;
+                if (checkSymbols.checked) charset += charsets.symbols;
+
+                if (charset === '') {
+                    generateOutput.value = "Please select at least one character set.";
+                    return;
+                }
+
+                let password = '';
+                const randomValues = new Uint32Array(length);
+                crypto.getRandomValues(randomValues);
+                
+                for (let i = 0; i < length; i++) {
+                    password += charset[randomValues[i] % charset.length];
+                }
+                generateOutput.value = password;
+            }
+
+            generateBtn.addEventListener('click', generatePassword);
+            generatePassword(); 
+
+            downloadBtn.addEventListener('click', () => {
+                const text = generateOutput.value;
+                if (!text || text.startsWith("Please select")) return;
+                
+                const element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+                element.setAttribute('download', 'password.txt');
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+            });
+            const strengthInput = document.getElementById('strength-input');
+            const strengthBar = document.getElementById('strength-bar');
+            const strengthText = document.getElementById('strength-text');
+
+            strengthInput.addEventListener('input', () => {
+                const pass = strengthInput.value;
+                let score = 0;
+                const feedback = [];
+
+                if (!pass) {
+                    strengthBar.style.width = '0%';
+                    strengthText.textContent = '';
+                    return;
+                }
+
+                if (pass.length >= 8) { score++; if (pass.length >= 12) score++; } else { feedback.push("Too short"); }
+                if (/[A-Z]/.test(pass)) { score++; } else { feedback.push("Add uppercase"); }
+                if (/[a-z]/.test(pass)) { score++; } else { feedback.push("Add lowercase"); }
+                if (/[0-9]/.test(pass)) { score++; } else { feedback.push("Add numbers"); }
+                if (/[^A-Za-z0-9]/.test(pass)) { score++; } else { feedback.push("Add symbols"); }
+
+                let width = (score / 6) * 100;
+                strengthBar.style.width = `${width > 100 ? 100 : width}%`;
+
+                if (score <= 2) {
+                    strengthBar.style.backgroundColor = '#d9534f';
+                    strengthText.textContent = 'Very Weak. ' + feedback.join('. ');
+                } else if (score <= 3) {
+                    strengthBar.style.backgroundColor = '#f0ad4e';
+                    strengthText.textContent = 'Weak. ' + feedback.join('. ');
+                } else if (score <= 4) {
+                    strengthBar.style.backgroundColor = '#5bc0de';
+                    strengthText.textContent = 'Medium.';
+                } else if (score <= 5) {
+                    strengthBar.style.backgroundColor = '#4cae4c';
+                    strengthText.textContent = 'Strong.';
+                } else {
+                    strengthBar.style.backgroundColor = '#28a745';
+                    strengthText.textContent = 'Very Strong!';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
