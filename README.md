@@ -26,7 +26,7 @@ If you want to run the project locally:
 
 1.  Clone this repository:
     ```bash
-    git clone [https://github.com/kvarbulemba/security-playground.git](https://github.com/kvarbulemba/your-repo-name.git)
+    git clone [https://github.com/kvarbulemba/security-playground.git]
     ```
 2.  Navigate to the directory:
     ```bash
