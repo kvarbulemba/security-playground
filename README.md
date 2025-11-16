@@ -6,8 +6,6 @@ This project serves as a great pet-project to demonstrate understanding of brows
 
 ## Demo
 
-*(Here you should add a screenshot or, even better, a GIF of the application in action. Upload it to the repo and link it here.)*
-
 ![Security Playground Demo](httpsimg/securityplaygroundexample.gif)
 
 ---
@@ -21,7 +19,6 @@ You can run this project in two ways:
 The project is hosted on GitHub Pages. Simply visit the site to start using the playground:
 
 **[Visit the Live Site](https://kvarbulemba.github.io/your-repo-name/)**
-*(Replace `your-repo-name` with your actual repository name)*
 
 ### 2. Local Setup
 
@@ -89,7 +86,6 @@ No frameworks, no libraries, no dependencies.
 
 **kvarbulemba**
 
-*(Replace `#` with your actual links)*
 * **GitHub:** [@[kvarbulemba]](https://github.com/kvarbulemba)
 * **LinkedIn:** [Illia Denysenko](https://www.linkedin.com/in/illia-denysenko-aa2056375)
 * **Resume:** [View My Resume](https://kvarbulemba.github.io/cv-website)
