@@ -6,7 +6,7 @@ This project serves as a great pet-project to demonstrate understanding of brows
 
 ## Demo
 
-![Security Playground Demo](httpsimg/securityplaygroundexample.gif)
+![Security Playground Demo](securityplaygroundexample.gif)
 
 ---
 
