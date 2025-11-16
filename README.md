@@ -18,7 +18,7 @@ You can run this project in two ways:
 
 The project is hosted on GitHub Pages. Simply visit the site to start using the playground:
 
-**[Visit the Live Site](https://kvarbulemba.github.io/your-repo-name/)**
+**[Visit the Live Site]([https://kvarbulemba.github.io/your-repo-name/](https://kvarbulemba.github.io/security-playground/))**
 
 ### 2. Local Setup
 
